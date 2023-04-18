@@ -70,25 +70,27 @@
             <form id="form" action="#" onsubmit="signup(event)">
                 <label class="left"><b>Name:</b></label>
                 <br>
-                <input type="text" id="name" placeholder="Enter Name" required />
+                <input type="text" id="name" class="li" placeholder="Enter Name" required />
                 <br><br>
                 <label><b>Email</b></label>
                 <br>
-                <input type="email" id="email" placeholder="Enter valid mail ID" required />
+                <input type="email" id="email" class="li" placeholder="Enter valid mail ID" required />
                 <br><br>
                 <label><b>Phone No.</b></label>
                 <br>
-                <input type="text" id="number" size="10" placeholder="Enter valid phone number" required />
+                <input type="text" id="number" class="li" size="10" placeholder="Enter valid phone number" required />
                 <br><br>
                 <label><b>Time for call</b></label>
                 <br>
-                <input type="date" id="date" required><input type="time" id="time" required />
+                <input type="date" class="li" id="date" required><input type="time" id="time" class="li" required />
                 <br><br>
                 <input type="submit" value="Get a call">
 
             </form>
+            <ul id="list"></ul>
         </div>
     </div>
+
     <script>
         function signup(event) {
             const name = document.getElementById('name').value;
@@ -98,18 +100,27 @@
             const time = document.getElementById('time').value;
 
             let details = {
-                name : name,
-                mailID : mail,
-                Phone_number : number,
-                appoinntment_date : date,
-                appointment_time : time
+                name: name,
+                mailID: mail,
+                Phone_number: number,
+                appoinntment_date: date,
+                appointment_time: time
             }
             let details_serialized = JSON.stringify(details);
+            showUser(details)
 
-            localStorage.setItem('Details of appointment',details_serialized);
+            localStorage.setItem(details.mailID, details_serialized);
 
-            let detials_obj = JSON.parse(localStorage.getItem('Details of appointment'));
-            console.log(detials_obj);
+            let details_obj = JSON.parse(localStorage.getItem(details.mailID));
+
+
+            function showUser(details) {
+                let prntEle = document.getElementById('list')
+                let childEle = document.createElement('li')
+                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appoinntment_date + "-" + details.appointment_time
+                prntEle.appendChild(childEle)
+
+            }
         }
     </script>
 </body>
