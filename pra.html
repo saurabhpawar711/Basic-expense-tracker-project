@@ -97,13 +97,19 @@
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
 
+            let details = {
+                name : name,
+                mailID : mail,
+                Phone_number : number,
+                appoinntment_date : date,
+                appointment_time : time
+            }
+            let details_serialized = JSON.stringify(details);
 
-            localStorage.setItem('Name', name);
-            localStorage.setItem('mailID', mail);
-            localStorage.setItem('Phone number', number)
-            localStorage.setItem('Date of appointment', date)
-            localStorage.setItem('Time of appointment', time)
+            localStorage.setItem('Details of appointment',details_serialized);
 
+            let detials_obj = JSON.parse(localStorage.getItem('Details of appointment'));
+            console.log(detials_obj);
         }
     </script>
 </body>
