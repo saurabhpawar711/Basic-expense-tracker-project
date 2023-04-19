@@ -103,7 +103,7 @@
                 name: name,
                 mailID: mail,
                 Phone_number: number,
-                appoinntment_date: date,
+                appointment_date: date,
                 appointment_time: time
             }
             let details_serialized = JSON.stringify(details);
@@ -117,18 +117,33 @@
             function showUser(details) {
                 let prntEle = document.getElementById('list')
                 let childEle = document.createElement('li')
-                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appoinntment_date + "-" + details.appointment_time;
+                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appointment_date + "-" + details.appointment_time;
                 let delBtn = document.createElement('button');
                 delBtn.innerHTML = 'delete'
+                let editBtn = document.createElement('button')
+                editBtn.innerHTML = 'edit'
 
                 delBtn.onclick = () => {
                     localStorage.removeItem(details.mailID)
                     prntEle.removeChild(childEle)
                     prntEle.removeChild(delBtn)
+                    prntEle.removeChild(editBtn)
+                }
+                editBtn.onclick = () => {
+                    localStorage.removeItem(details.mailID)
+                    prntEle.removeChild(childEle)
+                    prntEle.removeChild(delBtn)
+                    prntEle.removeChild(editBtn)
+                    document.getElementById('name').value = details.name
+                    document.getElementById('email').value = details.mailID
+                    document.getElementById('number').value = details.Phone_number
+                    document.getElementById('date').value = details.appointment_date
+                    document.getElementById('time').value = details.appointment_time
                 }
 
                 prntEle.appendChild(childEle)
                 prntEle.appendChild(delBtn)
+                prntEle.appendChild(editBtn)
             }
         }
     </script>
