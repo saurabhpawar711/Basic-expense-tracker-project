@@ -117,9 +117,18 @@
             function showUser(details) {
                 let prntEle = document.getElementById('list')
                 let childEle = document.createElement('li')
-                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appoinntment_date + "-" + details.appointment_time
-                prntEle.appendChild(childEle)
+                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appoinntment_date + "-" + details.appointment_time;
+                let delBtn = document.createElement('button');
+                delBtn.innerHTML = 'delete'
 
+                delBtn.onclick = () => {
+                    localStorage.removeItem(details.mailID)
+                    prntEle.removeChild(childEle)
+                    prntEle.removeChild(delBtn)
+                }
+
+                prntEle.appendChild(childEle)
+                prntEle.appendChild(delBtn)
             }
         }
     </script>
