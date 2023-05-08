@@ -1,77 +1,200 @@
-// console.log('person 1: shows ticket')
-// console.log('person 2: shows ticket')
+// GET REQUEST
+function getTodos() {
+//   axios({
+//     method:'get',
+//     url:"https://jsonplaceholder.typicode.com/todos?_limit=5"
+//   })
+//   .then(res => showOutput(res))
+//   .catch(err => console.log(err))
 
-// const premovie = async () => {
+  axios.get("https://jsonplaceholder.typicode.com/todos?_limit=5")
+  .then(res => showOutput(res))
+  .catch(err => console.log(err))
+ }
 
-// const wifegetsticks = new Promise ((resolve, reject) => {
-//     setTimeout(() => {
-//       resolve('tickets')
-//     },3000)
-// })
-// const getPopcorn = new Promise ((resolve, reject) => resolve('popcorn'))
-
-// const getButteronPopcorn = new Promise ((resolve, reject) => resolve('butter'))
-
-// const getColddrinks = new Promise ((resolve, reject) => resolve('colddrinks'))
-
-// let tickets = await wifegetsticks;
-// console.log(`wife: I got ${tickets}`)
-// console.log('husband: lets go inside');
-// console.log('wife: Im hungry');
-
-// let popcorn = await getPopcorn;
-// console.log(`husband: I got ${popcorn}`);
-// console.log('wife: i need butter on that');
-
-// let butter = await getButteronPopcorn;
-// console.log(`husband: here is your ${butter} popcorn`);
-// console.log('husband: can we go now?');
-// console.log('wife: i need colddrinks too');
-
-// let colddrinks = await getColddrinks;
-// console.log(`husband: i got the ${colddrinks}`);
-// console.log('husband: we are getting late');
-// console.log('wife: sure, lets go');
-
-// return tickets;
-// }
-// premovie().then((m) => {console.log(`person 3: shows ${m}`)})
-
-// console.log('person 4: shows ticket')
-// console.log('person 5: shows ticket')
-
-async function posttobecreated() {
-  const posts = [{ title: 'POST1' }];
-
-
-  const post2 = await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      posts.push({ title: 'POST2' });
-      if (posts.length > 0) {
-        resolve('POST2')
-      }
-      else {
-        reject('ERROR')
-      }
-    }, 3000)
+// POST REQUEST
+function addTodo() {
+  axios.post
+  ("https://jsonplaceholder.typicode.com/todos?_limit=5", {
+    title : 'post todo',
+    completed : false
   })
-
-
-
-  const deletePost = await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (posts.length > 0) {
-        const poppedElement = posts.pop();
-        resolve(poppedElement);
-      } else {
-        reject("ERROR: ARRAY IS EMPTY")
-      }
-    }, 1000)
-  })
-
-  console.log(post2)
-  console.log(deletePost.title)
-
+  .then(res => showOutput(res))
+  .catch(err => console.log(err))
 }
 
-posttobecreated();
+// PUT/PATCH REQUEST
+function updateTodo() {
+  // axios.put
+  // ("https://jsonplaceholder.typicode.com/todos/1", {
+  //   title : 'update todo',
+  //   completed : false
+  // })
+  // .then(res => showOutput(res))
+  // .catch(err => console.log(err))
+  axios.patch
+  ("https://jsonplaceholder.typicode.com/todos/1", {
+    title : 'update todo',
+    completed : false
+  })
+  .then(res => showOutput(res))
+  .catch(err => console.log(err))
+}
+
+// DELETE REQUEST
+function removeTodo() {
+  axios.delete
+  ("https://jsonplaceholder.typicode.com/todos/1")
+  .then(res => showOutput(res))
+  .catch(err => console.log(err))
+}
+
+// SIMULTANEOUS DATA
+function getData() {
+  axios
+  .all([
+    axios.get("https://jsonplaceholder.typicode.com/todos?_limit=5"),
+    axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5")])
+    .then(axios.spread((todos, posts) => showOutput(todos)))
+    .catch(err => console.log(err))
+}
+
+// CUSTOM HEADERS
+function customHeaders() {
+  const config = {
+    headers :{
+      'content-type' : 'application/json',
+      Authorization : 'sometoken'
+    }
+  }
+
+  axios
+    .post("https://jsonplaceholder.typicode.com/todos", {
+    title : 'post todo',
+    completed : false
+  },
+  config
+  )
+  .then(res => showOutput(res))
+  .catch(err => console.log(err))
+}
+
+// TRANSFORMING REQUESTS & RESPONSES
+function transformResponse() {
+  const options = {
+    method : 'post',
+    url : "https://jsonplaceholder.typicode.com/todos",
+    data : {
+      title : "Hello World"
+    },
+    transformResponse : axios.defaults.transformResponse.concat( (data) => {
+      data.title = data.title.toUpperCase()
+      return data;
+    })
+  }
+  axios(options).then(res => showOutput(res))
+}
+// ERROR HANDLING
+function errorHandling() {
+  axios.get("https://jsonplaceholder.typicode.com/todoss")
+  .then(res => showOutput(res))
+  .catch(err => {
+    if(err.response){
+      console.log(err.response.data);
+      console.log(err.response.status);
+      console.log(err.response.headers);
+    }
+    if(err.response.status === 404) {
+      alert('ERROR: page not founds')
+    }
+    else if(err.request) {
+      console.error(err.request);
+    }
+    else {
+      console.error(err.message)
+    }
+  });
+}
+
+// CANCEL TOKEN
+function cancelToken() {
+  const source = axios.CancelToken.source();
+
+  axios
+    .get('https://jsonplaceholder.typicode.com/todos', {
+      cancelToken: source.token
+    })
+    .then(res => showOutput(res))
+    .catch(thrown => {
+      if (axios.isCancel(thrown)) {
+        console.log('Request canceled', thrown.message);
+      }
+    });
+
+  if (true) {
+    source.cancel('Request canceled!');
+  }
+}
+
+// INTERCEPTING REQUESTS & RESPONSES
+axios.interceptors.request.use( config => {
+  console.log(`${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`)
+
+  return config
+},
+  error => {return Promise.reject(error)}
+)
+
+// AXIOS INSTANCES
+
+const axiosInstances = axios.create({
+  baseURL : 'https://jsonplaceholder.typicode.com'
+});
+axiosInstances.get('/comments?_limit=5').then(res => showOutput(res))
+
+
+// Show output in browser
+function showOutput(res) {
+  document.getElementById('res').innerHTML = `
+  <div class="card card-body mb-4">
+    <h5>Status: ${res.status}</h5>
+  </div>
+  <div class="card mt-3">
+    <div class="card-header">
+      Headers
+    </div>
+    <div class="card-body">
+      <pre>${JSON.stringify(res.headers, null, 2)}</pre>
+    </div>
+  </div>
+  <div class="card mt-3">
+    <div class="card-header">
+      Data
+    </div>
+    <div class="card-body">
+      <pre>${JSON.stringify(res.data, null, 2)}</pre>
+    </div>
+  </div>
+  <div class="card mt-3">
+    <div class="card-header">
+      Config
+    </div>
+    <div class="card-body">
+      <pre>${JSON.stringify(res.config, null, 2)}</pre>
+    </div>
+  </div>
+`;
+}
+
+// Event listeners
+document.getElementById('get').addEventListener('click', getTodos);
+document.getElementById('post').addEventListener('click', addTodo);
+document.getElementById('update').addEventListener('click', updateTodo);
+document.getElementById('delete').addEventListener('click', removeTodo);
+document.getElementById('sim').addEventListener('click', getData);
+document.getElementById('headers').addEventListener('click', customHeaders);
+document
+  .getElementById('transform')
+  .addEventListener('click', transformResponse);
+document.getElementById('error').addEventListener('click', errorHandling);
+document.getElementById('cancel').addEventListener('click', cancelToken);
