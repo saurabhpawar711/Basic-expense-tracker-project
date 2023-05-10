@@ -68,7 +68,7 @@
             <hr>
 
             <form id="form" action="#" onsubmit="signup(event)">
-                <label class="left"><b>Name:</b></label>
+                <label><b>Name</b></label>
                 <br>
                 <input type="text" id="name" class="li" placeholder="Enter Name" required />
                 <br><br>
@@ -90,9 +90,10 @@
             <ul id="list"></ul>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script>
         function signup(event) {
+            const form = document.getElementById('form')
             const name = document.getElementById('name').value;
             const mail = document.getElementById('email').value;
             const number = document.getElementById('number').value;
@@ -106,12 +107,20 @@
                 appointment_date: date,
                 appointment_time: time
             }
-            let details_serialized = JSON.stringify(details);
-            showUser(details)
+            // let details_serialized = JSON.stringify(details);
 
-            localStorage.setItem(details.mailID, details_serialized);
+            axios.post("https://crudcrud.com/api/b634a6a87f5d45d8ae4bbd094c01a33f/appointmentData", details)
+            .then(response => {
+                showUser(response.data)
+                console.log(response)
+            })
+            .catch(err => console.log(err))
 
-            let details_obj = JSON.parse(localStorage.getItem(details.mailID));
+            // showUser(details)
+
+            // localStorage.setItem(details.mailID, details_serialized);
+
+            // let details_obj = JSON.parse(localStorage.getItem(details.mailID));
 
 
             function showUser(details) {
