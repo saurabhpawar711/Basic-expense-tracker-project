@@ -120,7 +120,7 @@
                 appointment_date: date,
                 appointment_time: time
             }
-            // let details_serialized = JSON.stringify(details);
+
 
             axios
                 .post("https://crudcrud.com/api/7ddbb286ada24de5b7572b4d7d0f0545/appointmentData", details)
@@ -146,12 +146,6 @@
                 })
         })
 
-        // showUser(details)
-
-        // localStorage.setItem(details.mailID, details_serialized);
-
-        // let details_obj = JSON.parse(localStorage.getItem(details.mailID));
-
 
         function showUser(details) {
             let prntEle = document.getElementById('list')
@@ -167,7 +161,7 @@
             editBtn.innerHTML = 'edit'
             editBtn.onclick = function () {
                 const userId = details._id
-                EditUser(userId)
+                editUser(userId)
             }
             prntEle.appendChild(childEle)
             prntEle.appendChild(delBtn)
@@ -185,11 +179,11 @@
                 prntEle.removeChild(delBtn)
                 prntEle.removeChild(editBtn)
             }
-            editBtn.onclick = () => {
-                localStorage.removeItem(details.mailID)
-                prntEle.removeChild(childEle)
-                prntEle.removeChild(delBtn)
-                prntEle.removeChild(editBtn)
+            function editUser(userId) {
+                axios
+                    .delete(`https://crudcrud.com/api/7ddbb286ada24de5b7572b4d7d0f0545/appointmentData/${userId}`)
+                    .then(response => removeUserFromScreen(userId))
+                    .catch(err => console.log(err))
                 document.getElementById('name').value = details.name
                 document.getElementById('email').value = details.mailID
                 document.getElementById('number').value = details.Phone_number
