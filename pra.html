@@ -90,8 +90,21 @@
             <ul id="list"></ul>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-    <script defer>
+    <script>
+
+        // const proxy = creareProxyMiddleware({
+        //     target: 'https://crudcrud.com/api',
+        //     changeOrigin: true
+        // })
+        // const http = require('http');
+        // const server = http.createServer((req, res) => {
+        //     proxy(req, res, () => {});
+        // })
+
+        // server.listen(3000);
+
         function appointmentBook(event) {
             const form = document.getElementById('form')
             const name = document.getElementById('name').value;
@@ -116,70 +129,74 @@
                     console.log(response)
                 })
                 .catch(err => console.log(err))
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            axios
+                .get("https://crudcrud.com/api/7ddbb286ada24de5b7572b4d7d0f0545/appointmentData")
+                .then((res) => {
+                    console.log(res)
+                    for (var i = 0; i < res.data.length; i++) {
+                        showUser(res.data[i])
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
+
+        // showUser(details)
+
+        // localStorage.setItem(details.mailID, details_serialized);
+
+        // let details_obj = JSON.parse(localStorage.getItem(details.mailID));
+
+
+        function showUser(details) {
+            let prntEle = document.getElementById('list')
+            let childEle = document.createElement('li')
+            childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appointment_date + "-" + details.appointment_time;
+            let delBtn = document.createElement('button');
+            delBtn.innerHTML = 'delete'
+            delBtn.onclick = function () {
+                const userId = details._id
+                deleteUser(userId)
             }
- 
-           window.addEventListener('DOMContentLoaded', () => {
-            
+            let editBtn = document.createElement('button')
+            editBtn.innerHTML = 'edit'
+            editBtn.onclick = function () {
+                const userId = details._id
+                EditUser(userId)
+            }
+            prntEle.appendChild(childEle)
+            prntEle.appendChild(delBtn)
+            prntEle.appendChild(editBtn)
+
+            function deleteUser(userId) {
                 axios
-                    .get("https://crudcrud.com/api/7ddbb286ada24de5b7572b4d7d0f0545/appointmentData")
-                    .then((res) => {
-                        console.log(res)
-                        for(var i=0; i<res.data.length; i++)
-                        {
-                            showUser(res.data[i])
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
-           })
+                    .delete(`https://crudcrud.com/api/7ddbb286ada24de5b7572b4d7d0f0545/appointmentData/${userId}`)
+                    .then(response => removeUserFromScreen(userId))
+                    .catch(err => console.log(err))
 
-            // showUser(details)
-
-            // localStorage.setItem(details.mailID, details_serialized);
-
-            // let details_obj = JSON.parse(localStorage.getItem(details.mailID));
-
-
-            function showUser(details) {
-                
-                let prntEle = document.getElementById('list')
-                let childEle = document.createElement('li')
-                childEle.textContent = details.name + "-" + details.mailID + "-" + details.Phone_number + "-" + details.appointment_date + "-" + details.appointment_time;
-                let delBtn = document.createElement('button');
-                delBtn.innerHTML = 'delete'
-                let editBtn = document.createElement('button')
-                editBtn.innerHTML = 'edit'
-
-                delBtn.onclick = () => {
-                    // localStorage.removeItem(details.mailID)
-                    // axios
-                    // .delete(`https://crudcrud.com/api/b634a6a87f5d45d8ae4bbd094c01a33f/${details.id}`)
-                    // .then(response => console.log(response))
-                    // .catch(err => console.log(err))
-                    prntEle.removeChild(childEle)
-                    prntEle.removeChild(delBtn)
-                    prntEle.removeChild(editBtn)
-                }
-                editBtn.onclick = () => {
-                    localStorage.removeItem(details.mailID)
-                    prntEle.removeChild(childEle)
-                    prntEle.removeChild(delBtn)
-                    prntEle.removeChild(editBtn)
-                    document.getElementById('name').value = details.name
-                    document.getElementById('email').value = details.mailID
-                    document.getElementById('number').value = details.Phone_number
-                    document.getElementById('date').value = details.appointment_date
-                    document.getElementById('time').value = details.appointment_time
-                }
-
-                prntEle.appendChild(childEle)
-                prntEle.appendChild(delBtn)
-                prntEle.appendChild(editBtn)
             }
-        
-            
-        
+            function removeUserFromScreen(userId) {
+                prntEle.removeChild(childEle)
+                prntEle.removeChild(delBtn)
+                prntEle.removeChild(editBtn)
+            }
+            editBtn.onclick = () => {
+                localStorage.removeItem(details.mailID)
+                prntEle.removeChild(childEle)
+                prntEle.removeChild(delBtn)
+                prntEle.removeChild(editBtn)
+                document.getElementById('name').value = details.name
+                document.getElementById('email').value = details.mailID
+                document.getElementById('number').value = details.Phone_number
+                document.getElementById('date').value = details.appointment_date
+                document.getElementById('time').value = details.appointment_time
+            }
+        }
     </script>
 </body>
 
